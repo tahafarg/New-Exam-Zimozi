@@ -1,0 +1,18 @@
+Ensure the uuid-ossp extension is installed in PostgreSQL.
+Update appsettings.json with your PostgreSQL connection string but the name of data base is employee_management
+Run the database scripts.
+
+-----------------------------------------------------------
+
+# Clone the repository
+git clone [your-repo-url]
+cd employee-management
+
+# Create and update the database
+psql -U postgres -f create_database.sql
+psql -U postgres -d employee_management -f create_tables.sql
+
+# Run the application
+dotnet restore
+dotnet build
+dotnet run --project ModelApi

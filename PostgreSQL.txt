@@ -1,0 +1,40 @@
+-- create_database.sql
+CREATE DATABASE employee_management;
+
+-- create_tables.sql
+-- First, enable the uuid-ossp extension if not already enabled
+CREATE EXTENSION IF NOT EXISTS uuid-ossp;
+
+CREATE TABLE Employees (
+    EmployeeID UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    Name VARCHAR(100) NOT NULL,
+    Department VARCHAR(100) NOT NULL,
+    Salary DECIMAL(18,2) NOT NULL CHECK (Salary  0)
+);
+
+-- top_3_highest_paid_employees.sql
+WITH RankedEmployees AS (
+    SELECT 
+        EmployeeID,
+        Name,
+        Department,
+        Salary,
+        ROW_NUMBER() OVER (
+            PARTITION BY Department
+            ORDER BY Salary DESC
+        ) as SalaryRank
+    FROM 
+        Employees
+)
+SELECT 
+    EmployeeID,
+    Name,
+    Department,
+    Salary
+FROM 
+    RankedEmployees
+WHERE 
+    SalaryRank = 3
+ORDER BY 
+    Department,
+    Salary DESC;
